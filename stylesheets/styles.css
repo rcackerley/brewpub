@@ -1,0 +1,44 @@
+nav {
+  background: #362C1E;
+  display: flex;
+  align-items: center;
+  padding-top:15px;
+  padding-bottom:15px;
+  color: white;
+  justify-content:space-between;
+}
+
+.nav-logo {
+  display:flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  margin-left:50px;
+}
+
+.tagline {
+  font-family: 'Quicksand', sans-serif;
+  font-size: 15px;
+  padding-left: 20px;
+}
+
+.nav-right {
+  margin-right: 50px;
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+.icons {
+  height: 15px;
+  margin-left:20px;
+}
+
+.prof-thumbnail {
+  height: 25px;
+  border-radius: 50%;
+  border: solid 1px white;
+  margin-left: 20px;
+}
