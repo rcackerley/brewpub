@@ -74,6 +74,38 @@ footer {
   margin-left: 20px;
 }
 
+.heros {
+  display: grid;
+  margin-top: 3px;
+  grid-template-columns: 1fr 2fr 1fr;
+}
+
+.hero-button {
+  position: relative;
+  background: white;
+  border-radius: 50%;
+  height: 40px;
+  width: 40px;
+}
+
+.hero-card {
+  width: 100%;
+  height: 250px;
+  margin-left: 3px;
+}
+
+.botany {
+  background: linear-gradient(to right, #8E3611, #B14B18 40%, #D55F1F);
+}
+
+.wind {
+  background: linear-gradient(to right, #42593A, #4B5F3C, #747B43);
+}
+
+.air {
+  background: linear-gradient(to right, #8997B5, #687088 60%, #454859);
+}
+
 .body {
   display: grid;
   grid-template-columns: 1fr 3fr;
