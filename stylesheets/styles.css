@@ -75,23 +75,30 @@ footer {
 }
 
 .heros {
-  display: grid;
-  margin-top: 3px;
-  grid-template-columns: 1fr 2fr 1fr;
+  margin-bottom: 100px;
 }
 
-.hero-button {
-  position: relative;
-  background: white;
-  border-radius: 50%;
+.slick-prev, .slick-next {
+  z-index: 1;
+  border: none;
   height: 40px;
   width: 40px;
+}
+
+.slick-prev {
+  left: 2%;
+}
+
+.slick-next {
+  right:2%;
 }
 
 .hero-card {
   width: 100%;
   height: 250px;
-  margin-left: 3px;
+  margin-top: 3px;
+  margin-right: 3px;
+  display: flex;
 }
 
 .botany {
@@ -106,9 +113,57 @@ footer {
   background: linear-gradient(to right, #8997B5, #687088 60%, #454859);
 }
 
+.hero-ui {
+  display: flex;
+  margin-top: 4%;
+}
+.featured-image {
+  align-self: self-end;
+  margin-left: 4%;
+  height: 250px;
+  box-shadow: 6px 6px 10px rgba(0, 0, 0, 0.16);
+}
+
+.featured-content {
+  margin-left: 25px;
+}
+
+.featured-content h5, .featured-content h3, .featured-content .reviews span, .featured-content p {
+  color: #fff;
+}
+
+.featured-content h5 {
+  font-weight: 300;
+}
+
+.featured-content button {
+  margin-top: 5px;
+  background: #fff;
+  border:none;
+  box-shadow: 6px 6px 10px rgba(0, 0, 0, .16);
+  width: 40%;
+  height: 30px;
+  border-radius: 30px;
+  font-family: 'Quicksand', sans-serif;
+  font-weight: 700;
+  font-size: 17px
+}
+
+.book-color-botany {
+  color: #C96310;
+}
+
+.book-color-wind {
+  color: #425536;
+}
+
+.book-color-air {
+  color: #4B4E61;
+}
+
 .body {
   display: grid;
-  grid-template-columns: 1fr 3fr;
+  grid-template-columns: 1fr 4fr;
   margin-left: 50px;
   margin-top: 50px;
 }
@@ -141,8 +196,9 @@ footer {
   margin-bottom: 30px;
 }
 .main-well {
-
+  max-width: 844px;
 }
+
 .pairings-header {
   display: flex;
   justify-content: space-between;
@@ -290,4 +346,8 @@ footer button {
 .barrel {
   width: 35px;
   margin:0 28px 0 28px;
+}
+
+.slick-list {
+  overflow: visible;
 }

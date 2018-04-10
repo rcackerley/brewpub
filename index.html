@@ -7,6 +7,8 @@
   <link href="https://fonts.googleapis.com/css?family=Quicksand:300,400,500,700" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.css">
   <script defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.css"/>
+  <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.css"/>
   <link rel="stylesheet" href="stylesheets/styles.css">
   <title>brewpub</title>
 </head>
@@ -22,11 +24,82 @@
       <a href="#"><img class="icons" src="images/menu-icon.png"></a>
     </div>
   </nav>
-  <div class="heros">
-    <!-- <button class="hero-button"><</button> -->
-    <div class="hero-card wind"></div>
-    <div class="hero-card botany"></div>
-    <div class="hero-card air"></div>
+  <div class="center slick heros">
+    <div class="hero-card botany">
+      <div class="hero-ui">
+        <img class="featured-image" src="images/botany.jpg">
+        <div class="featured-content">
+          <h3>The Botany of Desire</h3>
+          <h5>by Michael Pollan</h5>
+          <div class="reviews">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/empty-bottle-white.png">
+              <span>1000 reviews</span>
+          </div>
+          <p class="summary">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+             augue tellus, semper sed nisi quis, sollicitudin faucibus ante. Nam
+             dignissim volutpat ipsum in semper. Sed quis felis quis dolor venenatis
+             ultricies. Donec placerat augue quis justo efficitur sollicitudin.
+             Maecenas luctus nibh auctor mauris ultrices maximus.
+          </p>
+          <button class="book-color-botany">View Pairing</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card air">
+      <div class="hero-ui">
+        <img class="featured-image" src="images/air.jpg">
+        <div class="featured-content">
+          <h3>Into Thin Air</h3>
+          <h5>by Jon Krakauer</h5>
+          <div class="reviews">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/empty-bottle-white.png">
+              <span>1000 reviews</span>
+          </div>
+          <p class="summary">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+             augue tellus, semper sed nisi quis, sollicitudin faucibus ante. Nam
+             dignissim volutpat ipsum in semper. Sed quis felis quis dolor venenatis
+             ultricies. Donec placerat augue quis justo efficitur sollicitudin.
+             Maecenas luctus nibh auctor mauris ultrices maximus.
+          </p>
+          <button class="book-color-air">View Pairing</button>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card wind">
+      <div class="hero-ui">
+        <img class="featured-image" src="images/wind.jpg">
+        <div class="featured-content">
+          <h3>The Name of the Wind</h3>
+          <h5>by Patrick Rothfuss</h5>
+          <div class="reviews">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/filled-bottle-white.png">
+              <img class="bottle" src="images/empty-bottle-white.png">
+              <span>1000 reviews</span>
+          </div>
+          <p class="summary">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
+             augue tellus, semper sed nisi quis, sollicitudin faucibus ante. Nam
+             dignissim volutpat ipsum in semper. Sed quis felis quis dolor venenatis
+             ultricies. Donec placerat augue quis justo efficitur sollicitudin.
+             Maecenas luctus nibh auctor mauris ultrices maximus.
+          </p>
+          <button class="book-color-air">View Pairing</button>
+        </div>
+      </div>
+    </div>
   </div>
   <div class="body">
     <div class="left-rail">
@@ -218,5 +291,8 @@
       <button>Submit</button>
     </div>
   </footer>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+  <script type="text/javascript" src="http://cdn.jsdelivr.net/gh/kenwheeler/slick@1.8.1/slick/slick.min.js"></script>
+  <script type="text/javascript" src="scripts/main.js"></script>
 </body>
 </html>
