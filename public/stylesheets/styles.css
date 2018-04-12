@@ -25,6 +25,7 @@ p {
   font-size: 12px;
   font-weight: 400;
   color: #362C1E;
+  margin-right: 15px;
 }
 
 footer {
@@ -141,7 +142,6 @@ footer {
   background: #fff;
   border:none;
   box-shadow: 6px 6px 10px rgba(0, 0, 0, .16);
-  width: 40%;
   height: 30px;
   border-radius: 30px;
   font-family: 'Quicksand', sans-serif;
@@ -348,6 +348,13 @@ footer button {
   margin:0 28px 0 28px;
 }
 
+/*Styles for overwriting slick slider  */
+
 .slick-list {
   overflow: visible;
+}
+
+.slick-prev:before, .slick-next:before {
+  font-size:40px;
+  opacity: .9;
 }
