@@ -20,6 +20,12 @@ let createUser = (user) => {
   db.query(`INSERT into users (email, password, name) VALUES ('${user.email}', '${user.password}', '${user.name}') RETURNING id;`)
 }
 
+let getHeroPairings = (req, res) =>
+  db.query(`SELECT description, books.name, author, image, genre, "color-gradient-1", "colorgradient-2", 
+  "colorgradient-3", beers.name, brewery, type from pairings INNER JOIN books ON 
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") 
+  where "featured-pairing" = 1;`)
+  .then(heros => res.send(heros))
 
 //authorization
 let createToken = (userId) =>
@@ -61,6 +67,7 @@ let signIn = (req, res) => {
 app.use(bodyParser.json());
 app.post('/signin', signIn);
 app.post('/users', postUser);
+app.get('/heros', getHeroPairings);
 app.get('/beers', getBrewsOfTheWeek);
 app.get('/spirits', getSpiritsOfTheWeek);
 app.use(express.static('public'));
