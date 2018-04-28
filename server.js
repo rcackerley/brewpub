@@ -16,29 +16,35 @@ let getSpiritsOfTheWeek = (req, res) =>
   db.query('SELECT name, distillary, icon from spirits WHERE sotw = 1')
   .then(spirits => res.send(spirits))
 
-let createUser = (user) => {
+let createUser = (user) =>
   db.query(`INSERT into users (email, password, name) VALUES ('${user.email}', '${user.password}', '${user.name}') RETURNING id;`)
-}
+
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT description, books.name, author, image, genre, "color-gradient-1", "colorgradient-2",
-  "colorgradient-3", beers.name, brewery, type from pairings INNER JOIN books ON
+  db.query(`SELECT description, books.title, author, image, genre, class, beers.name, brewery, type from pairings INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id")
   where "featured-pairing" = 1;`)
   .then(heros => res.send(heros))
 
+let getProfileImage = (id) =>
+  db.query(`SELECT image from users WHERE ${id} = id;`)
+
 //authorization
-let createToken = (userId) =>
-  jwt.sign({userId: userId}, signature, {expiresIn: '7d'});
+let createToken = (userId) => {
+  console.log(userId);
+  let tokenPayload = {userId: userId};
+  tokenPayload.token = jwt.sign({userId: userId}, signature, {expiresIn: '7d'});
+  return JSON.stringify(tokenPayload)
+}
 
 let validateCredentials = (res, email, password) => {
   let userId
   let userQuery = db.query(`SELECT email, password, id from users WHERE email = '${email}';`)
   .then(users => {userId = users[0].id; return users[0]})
   .then(user => bcrypt.compare(password, user.password))
-  .then(response => response ? userId : false)
+  .then(response => response ? userId : error)
   .then(userId => createToken(userId))
-  .then(token => res.send(token))
+  .then(token => { console.log(token); return res.send(token)})
   .catch(error => res.send(error));
 }
 
@@ -49,6 +55,7 @@ let postUser = (req, res) => {
   bcrypt.hash(credentials.password, 10)
   .then(hash => Object.assign({}, credentials, {password: hash}))
   .then(user => createUser(user))
+  .then(arrayWithIdObject => arrayWithIdObject[0].id)
   .then(id => createToken(id))
   .then(token => res.send(token))
   .catch(error => res.send(error));
@@ -58,6 +65,14 @@ let signIn = (req, res) => {
   let credentials = req.body;
   let {email, password} = credentials;
   validateCredentials(res, email, password);
+}
+
+let getProfileThumbnailImage = (req, res) => {
+  let payload = req.body;
+  let validation = jwt.verify(payload.token, signature);
+  validation && getProfileImage(payload.userId)
+  .then(imageUrl => res.send(JSON.stringify(imageUrl[0])))
+  .catch(error => res.send(error))
 }
 
 
@@ -70,6 +85,7 @@ app.post('/users', postUser);
 app.get('/heros', getHeroPairings);
 app.get('/beers', getBrewsOfTheWeek);
 app.get('/spirits', getSpiritsOfTheWeek);
+app.post('/profile', getProfileThumbnailImage);
 // app.use(express.static('public'));
 
 
