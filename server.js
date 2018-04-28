@@ -9,11 +9,11 @@ const bodyParser = require('body-parser');
 
 //DB Calls
 let getBrewsOfTheWeek = (req, res) =>
-  db.query('SELECT name, brewery from beers WHERE botw = 1;')
+  db.query('SELECT name, brewery, icon from beers WHERE botw = 1;')
   .then(beers => res.send(beers))
 
 let getSpiritsOfTheWeek = (req, res) =>
-  db.query('SELECT name, distillary from spirits WHERE sotw = 1')
+  db.query('SELECT name, distillary, icon from spirits WHERE sotw = 1')
   .then(spirits => res.send(spirits))
 
 let createUser = (user) => {
@@ -21,9 +21,9 @@ let createUser = (user) => {
 }
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT description, books.name, author, image, genre, "color-gradient-1", "colorgradient-2", 
-  "colorgradient-3", beers.name, brewery, type from pairings INNER JOIN books ON 
-  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") 
+  db.query(`SELECT description, books.name, author, image, genre, "color-gradient-1", "colorgradient-2",
+  "colorgradient-3", beers.name, brewery, type from pairings INNER JOIN books ON
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id")
   where "featured-pairing" = 1;`)
   .then(heros => res.send(heros))
 
@@ -70,7 +70,7 @@ app.post('/users', postUser);
 app.get('/heros', getHeroPairings);
 app.get('/beers', getBrewsOfTheWeek);
 app.get('/spirits', getSpiritsOfTheWeek);
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 
 app.listen(3000, () => console.log('Brewpub running on 3000'))
