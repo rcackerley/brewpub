@@ -29,6 +29,9 @@ let getHeroPairings = (req, res) =>
 let getProfileImage = (id) =>
   db.query(`SELECT image from users WHERE ${id} = id;`)
 
+let getUserProfile = (id) =>
+  db.query(`SELECT email, name, image from users WHERE ${id} = id;`)
+
 //authorization
 let createToken = (userId) => {
   console.log(userId);
@@ -75,6 +78,13 @@ let getProfileThumbnailImage = (req, res) => {
   .catch(error => res.send(error))
 }
 
+let getMyProfile = (req, res) => {
+  let payload = req.body;
+  let validation = jwt.verify(payload.token, signature);
+  validation && getUserProfile(payload.userId)
+  .then(user => res.send(JSON.stringify(user[0])))
+}
+
 
 
 
@@ -86,6 +96,7 @@ app.get('/heros', getHeroPairings);
 app.get('/beers', getBrewsOfTheWeek);
 app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
+app.post('/my-profile', getMyProfile)
 // app.use(express.static('public'));
 
 
