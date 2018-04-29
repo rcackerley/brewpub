@@ -21,9 +21,10 @@ let createUser = (user) =>
 
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT description, books.title, author, image, genre, class, beers.name, brewery, type from pairings INNER JOIN books ON
+  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "Total Stars"
+FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id")
-  where "featured-pairing" = 1;`)
+GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type;`)
   .then(heros => res.send(heros))
 
 let getProfileImage = (id) =>
