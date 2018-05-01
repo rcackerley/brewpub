@@ -21,17 +21,33 @@ let createUser = (user) =>
 
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "Total Stars"
+  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
-  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id")
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 1
 GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type;`)
-  .then(heros => res.send(heros))
+  .then(heros => res.send(JSON.stringify(heros)))
+
+let getAllPairings = (req, res) =>
+  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
+FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 0
+GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type;`)
+  .then(pairings => res.send(JSON.stringify(pairings)))
 
 let getProfileImage = (id) =>
   db.query(`SELECT image from users WHERE ${id} = id;`)
 
 let getUserProfile = (id) =>
   db.query(`SELECT email, name, image from users WHERE ${id} = id;`)
+
+let getBeerTypes = (type) => {
+  console.log(type);
+  return db.query(`SELECT * FROM beers  WHERE ("type" = '${type}');`)
+  .then(res => {
+    console.log(res);
+    return res
+  })
+}
 
 //authorization
 let createToken = (userId) => {
@@ -86,7 +102,11 @@ let getMyProfile = (req, res) => {
   .then(user => res.send(JSON.stringify(user[0])))
 }
 
-
+let getSimilarBeers = (req, res) => {
+  return getBeerTypes(req.body.type)
+  .then(beers => res.send(JSON.stringify(beers)))
+  .catch(err => res.send(err))
+}
 
 
 //Middleware
@@ -94,7 +114,9 @@ app.use(bodyParser.json());
 app.post('/signin', signIn);
 app.post('/users', postUser);
 app.get('/heros', getHeroPairings);
+app.get('/pairings', getAllPairings);
 app.get('/beers', getBrewsOfTheWeek);
+app.post('/similar-beers', getSimilarBeers)
 app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
 app.post('/my-profile', getMyProfile)
