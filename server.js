@@ -40,14 +40,14 @@ let getProfileImage = (id) =>
 let getUserProfile = (id) =>
   db.query(`SELECT email, name, image from users WHERE ${id} = id;`)
 
-let getBeerTypes = (type) => {
-  console.log(type);
-  return db.query(`SELECT * FROM beers  WHERE ("type" = '${type}');`)
-  .then(res => {
-    console.log(res);
-    return res
-  })
-}
+let getBeerTypes = (type) =>
+  db.query(`SELECT * FROM beers  WHERE ("type" = '${type}');`)
+
+let getPairingsByGenre = (genre) =>
+  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
+FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE (books."genre" = '${genre}')
+GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type;`)
 
 //authorization
 let createToken = (userId) => {
@@ -108,6 +108,10 @@ let getSimilarBeers = (req, res) => {
   .catch(err => res.send(err))
 }
 
+let getPairingsFiltered = (req, res) =>
+  getPairingsByGenre(req.body.genre)
+  .then(pairings => res.send(JSON.stringify(pairings)))
+  .catch(err => res.send(err))
 
 //Middleware
 app.use(bodyParser.json());
@@ -120,6 +124,7 @@ app.post('/similar-beers', getSimilarBeers)
 app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
 app.post('/my-profile', getMyProfile)
+app.post('/genres', getPairingsFiltered)
 // app.use(express.static('public'));
 
 
