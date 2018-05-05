@@ -142,8 +142,12 @@ let getMyShelf = (req, res) => {
   .catch(err => res.send(err))
 }
 
+let running = (req, res) =>
+  res.send('running')
+
 //Middleware
 app.use(bodyParser.json());
+app.get('/', running);
 app.post('/signin', signIn);
 app.post('/users', postUser);
 app.get('/heros', getHeroPairings);
