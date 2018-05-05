@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const signature = '@!3$%%^&1ed^&*!l@#^&***()R0441';
 const bodyParser = require('body-parser');
+const PORT = process.env.PORT || 3000
 
 //DB Calls
 let getBrewsOfTheWeek = (req, res) =>
@@ -163,4 +164,4 @@ app.get('/my-shelf', getMyShelf)
 // app.use(express.static('public'));
 
 
-app.listen(3000, () => console.log('Brewpub running on 3000'))
+app.listen(PORT, () => console.log('Brewpub running on 3000'))
