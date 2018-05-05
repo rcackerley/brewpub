@@ -21,14 +21,14 @@ let createUser = (user) =>
 
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "stars"
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 1
 GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type;`)
   .then(heros => res.send(JSON.stringify(heros)))
 
 let getAllPairings = (req, res) =>
-  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 0
 GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type;`)
@@ -44,10 +44,21 @@ let getBeerTypes = (type) =>
   db.query(`SELECT * FROM beers  WHERE ("type" = '${type}');`)
 
 let getPairingsByGenre = (genre) =>
-  db.query(`SELECT COUNT(stars) as reviews, description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE (books."genre" = '${genre}')
 GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type;`)
+
+
+let postRating = (rating, pairingId, userId) =>
+  db.query(`INSERT INTO "public"."ratings"("users.id", "pairings.id", "stars")
+  VALUES(${userId}, ${pairingId}, ${rating}) RETURNING "id", "users.id", "pairings.id", "stars";`)
+
+let getMyShelfFromDB = (id) =>
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type, beers.icon ,sum(stars) AS "stars"
+  FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE ratings."users.id" = ${id}
+  GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
 
 //authorization
 let createToken = (userId) => {
@@ -113,6 +124,24 @@ let getPairingsFiltered = (req, res) =>
   .then(pairings => res.send(JSON.stringify(pairings)))
   .catch(err => res.send(err))
 
+let ratePairing = (req, res) => {
+  let rating = req.body.stars;
+  let pairingId = req.body.id
+  let token = req.headers.authorization;
+  let validation = jwt.verify(token, signature);
+  validation && postRating(rating, pairingId, validation.userId)
+  .then(response => res.send(response))
+  .catch(err => res.send(err))
+}
+
+let getMyShelf = (req, res) => {
+  let token = req.headers.authorization;
+  let validation = jwt.verify(token, signature);
+  validation && getMyShelfFromDB(validation.userId)
+  .then(response => res.send(response))
+  .catch(err => res.send(err))
+}
+
 //Middleware
 app.use(bodyParser.json());
 app.post('/signin', signIn);
@@ -125,6 +154,8 @@ app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
 app.post('/my-profile', getMyProfile)
 app.post('/genres', getPairingsFiltered)
+app.post('/ratings', ratePairing)
+app.get('/my-shelf', getMyShelf)
 // app.use(express.static('public'));
 
 
