@@ -160,7 +160,7 @@ app.post('/my-profile', getMyProfile)
 app.post('/genres', getPairingsFiltered)
 app.post('/ratings', ratePairing)
 app.get('/my-shelf', getMyShelf)
-app.use('/static', express.static(path.join(__dirname, 'build')))
+app.use(express.static('build'))
 // app.use(express.static('public'));
 
 
