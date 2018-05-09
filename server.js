@@ -22,10 +22,10 @@ let createUser = (user) =>
 
 
 let getHeroPairings = (req, res) =>
-  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type, sum(stars) AS "stars"
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name,beers.icon, brewery, type, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 1
-GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type;`)
+GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
   .then(heros => res.send(JSON.stringify(heros)))
 
 let getAllPairings = (req, res) =>
@@ -59,6 +59,12 @@ let getMyShelfFromDB = (id) =>
   db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name, brewery, type, beers.icon ,sum(stars) AS "stars"
   FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE ratings."users.id" = ${id}
+  GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
+
+let getSinglePairingFromDB = (id) =>
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, class, beers.name,beers.icon, brewery, type, sum(stars) AS "stars"
+  FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
+  (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."id" = ${id}
   GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
 
 //authorization
@@ -143,6 +149,13 @@ let getMyShelf = (req, res) => {
   .catch(err => res.send(err))
 }
 
+let getPairing = (req, res) => {
+  let id = req.headers.id;
+  getSinglePairingFromDB(id)
+  .then(pairing => res.send(pairing[0]))
+  .catch(err => res.send(err))
+}
+
 let running = (req, res) =>
   res.send('running')
 
@@ -160,6 +173,7 @@ app.post('/my-profile', getMyProfile)
 app.post('/genres', getPairingsFiltered)
 app.post('/ratings', ratePairing)
 app.get('/my-shelf', getMyShelf)
+app.get('/featured-pairing', getPairing)
 app.use(express.static('build'))
 // app.use(express.static('public'));
 
