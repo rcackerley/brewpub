@@ -81,8 +81,10 @@ let getSinglePairingFromDB = (id) =>
   GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
 
 let updateImage = (filename, id) =>
-  db.query(`UPDATE "public"."users" SET "image"='${filename}'
+  db.one(`UPDATE "public"."users" SET "image"='${filename}'
   WHERE "id"=${id} RETURNING "id", "email", "name", "image";`)
+
+
 
 //authorization
 let createToken = (userId) => {
