@@ -6,7 +6,20 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const signature = '@!3$%%^&1ed^&*!l@#^&***()R0441';
 const bodyParser = require('body-parser');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
+const multer = require('multer');
 const PORT = process.env.PORT || 3000
+
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+      cb(null, 'public/images/uploads')
+    },
+    filename: (req, file, cb) => {
+      cb(null, file.fieldname + '-' + Date.now())
+    }
+});
+let upload = multer({storage: storage});
 
 //DB Calls
 let getBrewsOfTheWeek = (req, res) =>
@@ -67,6 +80,10 @@ let getSinglePairingFromDB = (id) =>
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."id" = ${id}
   GROUP BY "pairings.id", description, books.title, author, image, genre, class, beers.name, beers.icon, brewery, type;`)
 
+let updateImage = (filename, id) =>
+  db.query(`UPDATE "public"."users" SET "image"='${filename}'
+  WHERE "id"=${id} RETURNING "id", "email", "name", "image";`)
+
 //authorization
 let createToken = (userId) => {
   console.log(userId);
@@ -78,7 +95,13 @@ let createToken = (userId) => {
 let validateCredentials = (res, email, password) => {
   let userId
   let userQuery = db.query(`SELECT email, password, id from users WHERE email = '${email}';`)
-  .then(users => {userId = users[0].id; return users[0]})
+  .then(users => {
+    if (users.length > 0) {
+      userId = users[0].id; return users[0]
+    } else {
+      res.status(400)
+      res.send('Username or password is incorrrect')
+    }})
   .then(user => bcrypt.compare(password, user.password))
   .then(response => response ? userId : error)
   .then(userId => createToken(userId))
@@ -107,18 +130,42 @@ let signIn = (req, res) => {
 
 let getProfileThumbnailImage = (req, res) => {
   let payload = req.body;
-  let validation = jwt.verify(payload.token, signature);
-  validation && getProfileImage(payload.userId)
-  .then(imageUrl => res.send(JSON.stringify(imageUrl[0])))
-  .catch(error => res.send(error))
+  let validation
+  try {
+    validation = jwt.verify(payload.token, signature);
+  }
+  catch (error) {
+
+  }
+  if (validation) {
+    getProfileImage(payload.userId)
+    .then(imageUrl => res.send(JSON.stringify(imageUrl[0])))
+    .catch(error => res.send(error))
+  } else {
+    res.status(400);
+    res.send('token not valid')
+  }
 }
 
 let getMyProfile = (req, res) => {
   let payload = req.body;
-  let validation = jwt.verify(payload.token, signature);
-  validation && getUserProfile(payload.userId)
-  .then(user => res.send(JSON.stringify(user[0])))
+  let validation
+  try {
+    validation = jwt.verify(payload.token, signature);
+  }
+  catch (error) {
+
+  }
+  if (validation) {
+    getUserProfile(payload.userId)
+    .then(user => res.send(JSON.stringify(user[0])))
+    .catch(err => res.send(err))
+  } else {
+    res.status(400);
+    res.send('token not valid')
+  }
 }
+
 
 let getSimilarBeers = (req, res) => {
   return getBeerTypes(req.body.type)
@@ -156,26 +203,55 @@ let getPairing = (req, res) => {
   .catch(err => res.send(err))
 }
 
+let uploadImage = (req, res) => {
+  let payload = req.headers.authorization
+  console.log(req.headers.authorization);
+  let validation
+  try {
+    validation = jwt.verify(payload, signature);
+  }
+  catch (error) {}
+  if (validation) {
+    if (!req.files)
+      return res.status(400).send('No files were uploaded.');
+
+    let imageFile = req.files.file;
+    imageFile.mv(`build/images/users/${req.body.filename.slice(12)}`, (err) => {
+      if (err) {
+        console.log(err);
+        return res.status(500).send(err);
+      }
+    updateImage(`images/users/${req.body.filename.slice(12)}`, validation.userId)
+    .then(user => res.send(user))
+    });
+  } else {
+    res.status(400).send('token not valid');
+  }
+}
+
 let running = (req, res) =>
   res.send('running')
 
 //Middleware
 app.use(bodyParser.json());
+app.use(cors());
+app.use(fileUpload());
 app.post('/signin', signIn);
 app.post('/users', postUser);
 app.get('/heros', getHeroPairings);
 app.get('/pairings', getAllPairings);
 app.get('/beers', getBrewsOfTheWeek);
-app.post('/similar-beers', getSimilarBeers)
+app.post('/similar-beers', getSimilarBeers);
 app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
-app.post('/my-profile', getMyProfile)
-app.post('/genres', getPairingsFiltered)
-app.post('/ratings', ratePairing)
-app.get('/my-shelf', getMyShelf)
-app.get('/featured-pairing', getPairing)
-app.use(express.static('build'))
-// app.use(express.static('public'));
+app.post('/my-profile', getMyProfile);
+app.post('/genres', getPairingsFiltered);
+app.post('/ratings', ratePairing);
+app.get('/my-shelf', getMyShelf);
+app.post('/upload', uploadImage);
+app.get('/featured-pairing', getPairing);
+app.post('/upload', uploadImage);
+app.use(express.static('build'));
 
 
 app.listen(PORT, () => console.log('Brewpub running on 3000'))
