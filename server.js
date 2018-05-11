@@ -218,7 +218,7 @@ let uploadImage = (req, res) => {
       return res.status(400).send('No files were uploaded.');
 
     let imageFile = req.files.file;
-    imageFile.mv(`images/users/${req.body.filename.slice(12)}`, (err) => {
+    imageFile.mv(`/images/users/${req.body.filename.slice(12)}`, (err) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
