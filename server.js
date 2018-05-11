@@ -88,7 +88,6 @@ let updateImage = (filename, id) =>
 
 //authorization
 let createToken = (userId) => {
-  console.log(userId);
   let tokenPayload = {userId: userId};
   tokenPayload.token = jwt.sign({userId: userId}, signature, {expiresIn: '7d'});
   return JSON.stringify(tokenPayload)
@@ -107,7 +106,7 @@ let validateCredentials = (res, email, password) => {
   .then(user => bcrypt.compare(password, user.password))
   .then(response => response ? userId : error)
   .then(userId => createToken(userId))
-  .then(token => { console.log(token); return res.send(token)})
+  .then(token => res.send(token))
   .catch(error => res.send(error));
 }
 
@@ -207,7 +206,6 @@ let getPairing = (req, res) => {
 
 let uploadImage = (req, res) => {
   let payload = req.headers.authorization
-  console.log(req.headers.authorization);
   let validation
   try {
     validation = jwt.verify(payload, signature);
@@ -218,8 +216,7 @@ let uploadImage = (req, res) => {
       return res.status(400).send('No files were uploaded.');
 
     let imageFile = req.files.file;
-    console.log(imageFile)
-    imageFile.mv(`/build/images/users/${req.body.filename.slice(12)}`, (err) => {
+    imageFile.mv(`build/images/users/${req.body.filename.slice(12)}`, (err) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
