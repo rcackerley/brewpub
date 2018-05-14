@@ -149,7 +149,8 @@ let getProfileThumbnailImage = (req, res) => {
 }
 
 let getMyProfile = (req, res) => {
-  let payload = req.body;
+  let payload = req.headers.authorization;
+  console.log(payload)
   let validation
   try {
     validation = jwt.verify(payload, signature);
@@ -158,7 +159,7 @@ let getMyProfile = (req, res) => {
 
   }
   if (validation) {
-    getUserProfile(payload.userId)
+    getUserProfile(validation.userId)
     .then(user => res.send(JSON.stringify(user[0])))
     .catch(err => res.send(err))
   } else {
@@ -244,7 +245,7 @@ app.get('/beers', getBrewsOfTheWeek);
 app.post('/similar-beers', getSimilarBeers);
 app.get('/spirits', getSpiritsOfTheWeek);
 app.post('/profile', getProfileThumbnailImage);
-app.post('/my-profile', getMyProfile);
+app.get('/my-profile', getMyProfile);
 app.post('/genres', getPairingsFiltered);
 app.post('/ratings', ratePairing);
 app.get('/my-shelf', getMyShelf);
