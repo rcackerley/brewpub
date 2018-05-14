@@ -152,7 +152,7 @@ let getMyProfile = (req, res) => {
   let payload = req.body;
   let validation
   try {
-    validation = jwt.verify(payload.token, signature);
+    validation = jwt.verify(payload, signature);
   }
   catch (error) {
 
