@@ -42,10 +42,10 @@ GROUP BY "pairings.id", description, books.title, author, image, genre, class, b
   .then(heros => res.send(JSON.stringify(heros)))
 
 let getAllPairings = (req, res) =>
-  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type, sum(stars) AS "stars"
+  db.query(`SELECT COUNT(stars) as reviews, "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type, beers.icon, sum(stars) AS "stars"
 FROM ratings INNER JOIN pairings ON (pairings.id = ratings."pairings.id") INNER JOIN books ON
   (books.id = pairings."books.id") INNER JOIN beers ON (beers.id = pairings."beers.id") WHERE pairings."featured-pairing" = 0
-GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, brewery, type;`)
+GROUP BY "pairings.id", description, books.title, author, image, genre, beers.name, beers.icon, brewery, type;`)
   .then(pairings => res.send(JSON.stringify(pairings)))
 
 let getProfileImage = (id) =>
