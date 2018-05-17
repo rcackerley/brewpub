@@ -84,7 +84,9 @@ let updateImage = (filename, id) =>
   db.one(`UPDATE "public"."users" SET "image"='${filename}'
   WHERE "id"=${id} RETURNING "id", "email", "name", "image";`)
 
-
+let getSearchTerms = (req, res) =>
+  db.query('(SELECT name, icon from beers) UNION ALL (SELECT title, image from books);')
+  .then(queryTerms => res.send(JSON.stringify(queryTerms)))
 
 //authorization
 let createToken = (userId) => {
@@ -252,6 +254,7 @@ app.get('/my-shelf', getMyShelf);
 app.post('/upload', uploadImage);
 app.get('/featured-pairing', getPairing);
 app.post('/upload', uploadImage);
+app.get('/search', getSearchTerms);
 app.use(express.static('build'));
 
 
