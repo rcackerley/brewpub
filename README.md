@@ -11,7 +11,7 @@ https://ancient-chamber-57403.herokuapp.com/
 - [Demo](#demo)
 - [Features](#features)
 - [Libraries/APIs](#external)
-- [Todos](#todos)
+- [To-dos](#todos)
 
 ---
 
@@ -22,8 +22,9 @@ https://ancient-chamber-57403.herokuapp.com/
 
 ## Features
 
-* Custom predictive search bar to query for recipes
-* Add recipe to database
+* Custom predictive search bar to query for books and beers
+* Rate Book and beer pairings
+* View previously rated book and beer pairings
 * Search for recipes based on category
 * Authentication using JSON web tokens and bcrypt
 * Client-side routing with react router
@@ -41,7 +42,7 @@ https://ancient-chamber-57403.herokuapp.com/
 * [Bcrypt](https://www.npmjs.com/package/bcrypt)
 
 
-## Todos/ in progress
+## To-dos/ in progress
 * Search for pairings via books, beers, and users
 * Add following user feature
 * Add intelligence to pairing recommendations
@@ -51,9 +52,3 @@ https://ancient-chamber-57403.herokuapp.com/
 * UI Animations
 
 ---
-
-## License
-
-[![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
-
-- **[MIT license](https://github.com/jamesnmcdowell/griddle/blob/master/LICENSE)**
